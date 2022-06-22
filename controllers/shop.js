@@ -1,10 +1,10 @@
 //const { redirect } = require('express/lib/response');
 const Product=require('../models/product');
-const Cart=require('../models/cart');
-const User = require('../models/user');
+//const Cart=require('../models/cart');
+//const User = require('../models/user');
 
 exports.getProducts=(req,res,next)=>{
-    Product.findAll()
+    Product.fetchAll()
     .then(products=>{
         res.render('shop/product-list',
         {
@@ -14,7 +14,7 @@ exports.getProducts=(req,res,next)=>{
             hasProducts:products.length>0,
             productCss:true,
             activeShop:true,
-            isAuthenticated:req.session.isLoggedIn
+            isAuthenticated:true
         });
     }).catch(error=>{
 
@@ -24,14 +24,14 @@ exports.getProducts=(req,res,next)=>{
 exports.getProduct=(req,res,next)=>{
     const productId=req.params.productId;
    //console.log(productId);
-    Product.findByPk(productId)
+    Product.findById(productId)
     .then(product=>{
         //console.log(product);
         res.render('shop/product-detail',{
             product:product,
             pageTitle:product.title,
             path:'/products',
-            isAuthenticated:req.session.isLoggedIn
+            isAuthenticated:true
         });
     })
     .catch(err=>{
@@ -41,7 +41,7 @@ exports.getProduct=(req,res,next)=>{
 };
 
 exports.getIndex=(req,res,next)=>{
-    req.user.getProducts()
+    Product.fetchAll()
     .then(products=>{
         res.render('shop/index',
         {
@@ -51,28 +51,12 @@ exports.getIndex=(req,res,next)=>{
             hasProducts:products.length>0,
             productCss:true,
             activeShop:true,
-            isAuthenticated:req.session.isLoggedIn
+            isAuthenticated:true
         });
     })
     .catch(err=>{
 
     });
-
-    /* Product.findAll()
-    .then(products=>{
-        res.render('shop/index',
-        {
-            prods:products,
-            pageTitle:'Shop',
-            path:'/',
-            hasProducts:products.length>0,
-            productCss:true,
-            activeShop:true
-        });
-    })
-    .catch(err=>{
-
-    }); */
 };
 
 exports.getCart=(req,res,next)=>{
@@ -94,23 +78,6 @@ exports.getCart=(req,res,next)=>{
     .catch(error=>{
         console.log(error);
     });
-    /* Cart.getCart(cart=>{
-        Product.fetchAll(products=>{
-            const cartProducts=[];
-            for (product of products) {
-                const cartProductData=cart.products.find(prod=>prod.id===product.id);
-                if(cartProductData){
-                    cartProducts.push({productData:product,qty:cartProductData.qty});
-                }
-            }
-            //console.log(cartProducts);
-            res.render('shop/cart',{
-                pageTitle:'Your Cart',
-                path:'/cart',
-                products:cartProducts
-            });
-        });
-    }); */
     
 }
 
@@ -144,11 +111,7 @@ exports.postCart=(req,res,next)=>{
     .catch(error=>{
         console.log(error);
     });
-    /* console.log(prodId);
-    Product.findById(prodId,(product)=>{
-        Cart.addProduct(prodId,product.price);
-    });
-    res.redirect('/cart'); */
+   
 }
 
 exports.getCheckout=(req,res,next)=>{

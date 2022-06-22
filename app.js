@@ -7,11 +7,13 @@ const session=require('express-session');
 var mysql2 = require('mysql2/promise');
 var MySQLStore = require('express-mysql-session')(session);
 
-/* const adminRoutes=require('./routes/admin');
+const adminRoutes=require('./routes/admin');
 const shopRoutes=require('./routes/shop');
-const authRoutes=require('./routes/auth'); */
+/* const authRoutes=require('./routes/auth'); */
 const errorController=require('./controllers/error');
-const mongoConnect=require('./util/database');
+const mongoConnect=require('./util/database').mongoConnect;
+const User=require('./models/user');
+
 const app=express();
 
 /* var options = {
@@ -52,23 +54,23 @@ app.use(express.static(path.join(__dirname, 'public')));
         })); */
 
 app.use((req,res,next)=>{
-  /* User.findByPk(1)
+  User.findById('62b1eaf10bc946e533e1f9a2')
   .then(user=>{
     req.user=user;
     next();
   })
   .catch(error=>{
     console.log(error);
-  }); */
+  });
 });
-/* app.use('/admin',adminRoutes);
+app.use('/admin',adminRoutes);
 app.use(shopRoutes);
-app.use(authRoutes); */
+/* app.use(authRoutes); */
 
 
 
 app.use(errorController.get404Page);
-mongoConnect((client)=>{
-  console.log(client);
+mongoConnect(()=>{
+  //console.log(client);
   app.listen(3000);
 })
